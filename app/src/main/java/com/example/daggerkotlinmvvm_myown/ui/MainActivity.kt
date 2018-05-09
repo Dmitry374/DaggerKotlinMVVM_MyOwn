@@ -9,21 +9,26 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.example.daggerkotlinmvvm_myown.R
+import com.example.mvvm_mytestgrechkakotlin_3.model.ServerApi
 import com.squareup.picasso.Picasso
+import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Retrofit
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     private val compositeDisposable by lazy { CompositeDisposable() }
 
-
-//    @Inject
+    @Inject
     lateinit var mainActivityViewModel: MainActivityViewModel
+
+    @Inject
+    lateinit var serverApi: ServerApi
 
     @Inject
     lateinit var picasso: Picasso
@@ -38,12 +43,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainActivityViewModel = MainActivityViewModel()
-
-        subscribe(mainActivityViewModel.getObject()
+        subscribe(mainActivityViewModel.getObject(serverApi)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -58,14 +62,11 @@ class MainActivity : AppCompatActivity() {
                     imgHello.startAnimation(anim)
 
                     handler.postDelayed(Runnable {
-//                        val intent = Intent(this@MainActivity, SecondActivity::class.java)
-//                        startActivity(intent)
 
                         picasso
                                 .load(R.mipmap.ic_launcher)
                                 .into(imgHello)
 
-                        finish()
                     }, 3000)
 
 
@@ -78,5 +79,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         compositeDisposable.clear()
+        compositeDisposable.dispose()
     }
 }

@@ -22,13 +22,15 @@ import javax.inject.Singleton
  */
 
 @Module(includes = arrayOf(ContextModule::class))
-class NetworkModule(var mBaseUrl: String) {
+class NetworkModule {
 
-//    @Provides
-//    @Singleton
-//    fun serverApi(retrofit: Retrofit): ServerApi {
-//        return retrofit.create<ServerApi>(ServerApi::class.java)
-//    }
+//class NetworkModule(var mBaseUrl: String) {
+
+    @Provides
+    @Singleton
+    fun serverApi(retrofit: Retrofit): ServerApi {
+        return retrofit.create(ServerApi::class.java)
+    }
 
     @Provides
     @Singleton
@@ -36,7 +38,8 @@ class NetworkModule(var mBaseUrl: String) {
         return Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(mBaseUrl)
+                .baseUrl("http://keit126.ru/")
+//                .baseUrl(mBaseUrl)
                 .client(okHttpClient)
                 .build()
     }

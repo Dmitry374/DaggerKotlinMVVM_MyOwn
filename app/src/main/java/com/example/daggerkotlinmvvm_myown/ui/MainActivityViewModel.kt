@@ -1,8 +1,10 @@
 package com.example.daggerkotlinmvvm_myown.ui
 
+import android.content.Context
 import com.example.daggerkotlinmvvm_myown.App
 import com.example.mvvm_mytestgrechkakotlin_3.model.Model
 import com.example.mvvm_mytestgrechkakotlin_3.model.ServerApi
+import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -14,20 +16,12 @@ import javax.inject.Inject
  */
 class MainActivityViewModel {
 
-//    val serverApi by lazy {
-//        ServerApi.create()
-//    }
-
-    @Inject
-    lateinit var retrofit: Retrofit
-
-    fun getObject(): Observable<Model.ItemServerData> {
+    fun getObject(serverApi: ServerApi): Observable<Model.ItemServerData> {
 
 //        retrofit = App.appComponent.getRetrofit()
 
-        return retrofit.create(ServerApi::class.java).loadData()
+        return serverApi.loadData()
 
-//        return serverApi.loadData()
         /*.map {
             Model.ItemServerData(it.splashUrl)
         }*/
